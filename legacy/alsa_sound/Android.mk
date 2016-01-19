@@ -26,7 +26,7 @@ endif
 ifeq ($(strip $(QCOM_FM_ENABLED)),true)
     common_cflags += -DQCOM_FM_ENABLED
 endif
-ifeq ($(strip $(QCOM_PROXY_DEVICE_ENABLED)),true)
+ifneq ($(strip $(QCOM_PROXY_DEVICE_ENABLED)),false)
     common_cflags += -DQCOM_PROXY_DEVICE_ENABLED
 endif
 ifneq ($(strip $(QCOM_OUTPUT_FLAGS_ENABLED)),false)
@@ -35,16 +35,16 @@ endif
 ifeq ($(strip $(QCOM_SSR_ENABLED)),true)
     common_cflags += -DQCOM_SSR_ENABLED
 endif
-ifeq ($(strip $(QCOM_USBAUDIO_ENABLED)),true)
+ifneq ($(strip $(QCOM_USBAUDIO_ENABLED)),false)
     common_cflags += -DQCOM_USBAUDIO_ENABLED
 endif
-ifeq ($(strip $(QCOM_ADSP_SSR_ENABLED)),true)
+ifneq ($(strip $(QCOM_ADSP_SSR_ENABLED)),false)
     common_cflags += -DQCOM_ADSP_SSR_ENABLED
 endif
 ifneq ($(strip $(QCOM_FLUENCE_ENABLED)),false)
     common_cflags += -DQCOM_FLUENCE_ENABLED
 endif
-ifeq ($(strip $(QCOM_TUNNEL_LPA_ENABLED)),true)
+ifneq ($(strip $(QCOM_TUNNEL_LPA_ENABLED)),false)
     common_cflags += -DQCOM_TUNNEL_LPA_ENABLED
 endif
 
@@ -161,7 +161,7 @@ LOCAL_SRC_FILES := \
   AudioUtil.cpp                 \
   ALSADevice.cpp
 
-ifeq ($(strip $(QCOM_TUNNEL_LPA_ENABLED)),true)
+ifneq ($(strip $(QCOM_TUNNEL_LPA_ENABLED)),false)
     LOCAL_SRC_FILES += AudioSessionOut.cpp
 endif
 
@@ -180,7 +180,11 @@ LOCAL_SHARED_LIBRARIES := \
     libalsa-intf \
     libaudioutils
 
-LOCAL_SHARED_LIBRARIES += libdl
+ifeq ($(TARGET_SIMULATOR),true)
+ LOCAL_LDLIBS += -ldl
+else
+ LOCAL_SHARED_LIBRARIES += libdl
+endif
 
 LOCAL_C_INCLUDES += $(TARGET_OUT_HEADERS)/mm-audio/audio-alsa
 LOCAL_C_INCLUDES += $(TARGET_OUT_HEADERS)/mm-audio/libalsa-intf
